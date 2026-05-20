@@ -1,14 +1,7 @@
-[package]
-name = "marine-ingest-service"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+resolver = "2"
 
-[dependencies]
-dotenv = "0.15.0"
-futures-util = "0.3.32"
-serde = { version = "1.0.228", features = ["derive"] }
-serde_json = "1.0.149"
-tokio = { version = "1.52.3", features = ["full"] }
-tokio-tungstenite = { version = "0.29.0", features = ["native-tls"] }
-tracing = "0.1.44"
-tungstenite = "0.29.0"
+members = [
+  "apps/ingest-service",
+  "apps/api",
+]

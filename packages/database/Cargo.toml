@@ -1,0 +1,9 @@
+[package]
+name = "database"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+chrono = "0.4.44"
+diesel = { version = "2.3.9", features = ["chrono", "postgres"] }
+dotenvy = "0.15.7"

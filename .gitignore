@@ -3,3 +3,6 @@
 # Ignore environment variable files
 .env
 .env.local
+
+# Generated
+schema.rs

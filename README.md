@@ -14,7 +14,8 @@ Currently focused on:
 ```txt
 apps/
 ├── ingest-service/
-└── api/
+├── api/
+└── packages/database
 ```
 
 For running the ingest-service just use:
@@ -23,11 +24,16 @@ For running the ingest-service just use:
 cargo run -p ingest-service
 ```
 
-Tech Stack:
+Also now to allow the income data to allow the future api, we'll need a database so run:
 
-- Rust
-- Tokio
-- Axum
-- Diesel
-- PostgreSQL
-- WebSockets
+```shell
+docker compose up -d
+```
+
+then ``diesel setup`` from ``packages/database``
+
+Lastly to generate the ``schema.rs`` just use:
+
+```shell
+diesel migration run
+```

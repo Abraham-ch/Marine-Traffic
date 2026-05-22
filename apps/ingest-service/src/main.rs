@@ -4,7 +4,9 @@ use dotenv::dotenv;
 
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 use futures_util::{SinkExt, StreamExt};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
+
+use database::{create_vessel, establish_connection, models::Vessel};
 
 #[derive(Serialize)]
 #[serde(rename_all = "PascalCase")]
@@ -15,6 +17,22 @@ struct SubscriptionMessage {
   #[serde(rename = "FIltersShipMMSI")]
   filters_ship_mmsi: Vec<String>,
   filter_message_types: Vec<String>,
+}
+
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "PascalCase")]
+struct VesselMessage {
+  #[serde(rename = "MMSI")]
+  mmsi: i64,
+  ship_name: String,
+  #[serde(rename = "latitude")]
+  lat: f64,
+  #[serde(rename = "longitude")]
+  lng: f64,
+  #[serde(rename = "Sog")]
+  speed: Option<f32>,
+  #[serde(rename = "TrueHeading")]
+  heading: Option<f32>,
 }
 
 #[tokio::main]
@@ -58,6 +76,23 @@ async fn main() {
   println!("Sending message: {}", msg);
   write.send(msg).await.expect("Failed to send message");
   
+  let connection = &mut establish_connection();
+  if let Some (message) = read.next().await {
+    let message = message.expect("Failed to read message");
+    println!("Creating the vessel for message: {}", message);
+    let message: VesselMessage = serde_json::from_str(&message.to_string()).expect("Failed to parse message");
+    let vessel = create_vessel(connection, &Vessel {
+      mmsi: message.mmsi,
+      ship_name: message.ship_name,
+      lat: message.lat,
+      lng: message.lng,
+      speed: message.speed,
+      heading: message.heading,
+      updated_at: chrono::Utc::now(),
+    });
+    println!("Vessel created: {:?}", vessel);
+  };
+
   while let Some(message) = read.next().await {
     match message {
         Ok(msg) => println!("Received message: {}", msg),

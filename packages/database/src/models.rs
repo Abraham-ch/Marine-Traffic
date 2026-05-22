@@ -1,7 +1,7 @@
 use diesel::prelude::*;
 use chrono::{DateTime, Utc};
 
-#[derive(Queryable, Selectable, Insertable)]
+#[derive(Queryable, Selectable, Insertable, Debug)]
 #[diesel(table_name = crate::schema::vessels)]
 pub struct Vessel {
     pub mmsi: i64,

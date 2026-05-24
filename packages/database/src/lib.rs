@@ -1,6 +1,8 @@
 pub mod schema;
 pub mod models;
-
+pub mod queries {
+  pub mod upsert_vessels;
+}
 use diesel::prelude::*;
 use dotenvy::dotenv;
 use std::env;

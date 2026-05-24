@@ -7,7 +7,7 @@ fn main() {
 
   let connection = &mut establish_connection();
   let results = vessels
-    .limit(5)
+    .limit(100) //TODO: ask user in the console for the limit
     .select(Vessel::as_select())
     .load(connection)
     .expect("Error loading vessels");

@@ -115,7 +115,13 @@ async fn main() {
 
   while let Some(message) = read.next().await {
     let msg = message.unwrap();
-    let message: RootMessage = serde_json::from_str(&msg.to_string()).expect("Failed to parse message"); //TODO: handle parsing empty string or non-JSON content
+    let message: RootMessage = match serde_json::from_str::<RootMessage>(&msg.to_string()){
+      Ok(msg) => msg,
+      Err(err) => {
+        eprintln!("Invalid JSON: {}", err);
+        continue;
+      }
+    };
 
     let upsert_vessels = database::queries::upsert_vessels::upsert_vessel(connection, &Vessel {
       mmsi      :message.metadata.mmsi,
